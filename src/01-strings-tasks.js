@@ -69,7 +69,7 @@ function getStringFromTemplate(firstName, lastName) {
  *   'Hello, Chuck Norris!' => 'Chuck Norris'
  */
 function extractNameFromTemplate(value) {
-  return value.split('Hello, ')[1];
+  return value.split('Hello, ')[1].split('!')[0];
   // throw new Error('Not implemented');
 }
 
@@ -117,9 +117,9 @@ function removeLeadingAndTrailingWhitespaces(value) {
  *   'cat', 3 => 'catcatcat'
  */
 function repeatString(value, count) {
-  const newS = '';
-  for (let i = 0; i < count; i++) {
-    newS.concat(value);
+  let newS = '';
+  for (let i = 0; i < count; i += 1) {
+    newS += value;
   }
   return newS;
   // throw new Error('Not implemented');
@@ -138,7 +138,7 @@ function repeatString(value, count) {
  *   'ABABAB','BA' => 'ABAB'
  */
 function removeFirstOccurrences(str, value) {
-  return str.split(value).join('');
+  return str.replace(value, '');
   // throw new Error('Not implemented');
 }
 
@@ -170,9 +170,9 @@ function unbracketTag(str) {
  *  'abcdefghijklmnopqrstuvwxyz' => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
  */
 function convertToUpperCase(str) {
-  const newS = '';
-  for (let i = 0; i < str.length; i++) {
-    newS.concat(str[i].toUpperCase);
+  let newS = '';
+  for (let i = 0; i < str.length; i += 1) {
+    newS += str[i].toUpperCase();
   }
   return newS;
   // throw new Error('Not implemented');
@@ -223,22 +223,22 @@ function extractEmails(str) {
  */
 function getRectangleString(width, height) {
   let newS = '┌';
-  for (let i = 1; i < height - 1; i++) {
+  for (let i = 1; i < width - 1; i += 1) {
     newS += '─';
   }
-  newS += '┐';
-  for (let j = 1; j < height - 1; j++) {
-    newS += '\n' + '│';
-    for (let i = 1; i < width - 1; i++) {
+  newS += '┐\n';
+  for (let j = 1; j < height - 1; j += 1) {
+    newS += '│';
+    for (let i = 1; i < width - 1; i += 1) {
       newS += ' ';
     }
-    newS += '│';
+    newS += '│\n';
   }
   newS += '└';
-  for (let i = 1; i < height - 1; i++) {
+  for (let i = 1; i < width - 1; i += 1) {
     newS += '─';
   }
-  newS += '┘';
+  newS += '┘\n';
   return newS;
   // throw new Error('Not implemented');
 }
@@ -262,8 +262,16 @@ function getRectangleString(width, height) {
  */
 function encodeToRot13(str) {
   let newS = '';
-  return
-  //throw new Error('Not implemented');
+  for (let i = 0; i < str.length; i += 1) {
+    const charcode = str.charCodeAt(i);
+    if ((charcode >= 65 && charcode < 78) || (charcode >= 97 && charcode < 110)) {
+      newS += String.fromCharCode(charcode + 13);
+    } else if ((charcode >= 78 && charcode < 91) || (charcode >= 110 && charcode < 123)) {
+      newS += String.fromCharCode(charcode - 13);
+    } else newS += str[i];
+  }
+  return newS;
+  // throw new Error('Not implemented');
 }
 
 /**
@@ -280,7 +288,7 @@ function encodeToRot13(str) {
  *   isString(new String('test')) => true
  */
 function isString(value) {
-  return typeof value === 'string';
+  return (typeof value === 'string' || value instanceof String);
   // throw new Error('Not implemented');
 }
 
@@ -310,8 +318,8 @@ function isString(value) {
  *   'K♠' => 51
  */
 function getCardId(value) {
-  let first; let
-    second;
+  let first = 0;
+  let second = 0;
   switch (value.slice(0, -1)) {
     case 'A':
       first = 0;
@@ -326,7 +334,7 @@ function getCardId(value) {
       first = 12;
       break;
     default:
-      first = parseInt(value.slice(0, -1)) - 1;
+      first = parseInt(value.slice(0, -1), 10) - 1;
       break;
   }
   switch (value.slice(-1)) {
@@ -342,6 +350,7 @@ function getCardId(value) {
     case '♠':
       second = 3;
       break;
+    default: second = 0;
   }
   return 13 * second + first;
   // throw new Error('Not implemented');
